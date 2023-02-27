@@ -6,9 +6,12 @@ import android.app.Dialog
 import android.content.Context
 import android.content.IntentSender.SendIntentException
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.Window
@@ -29,9 +32,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MapActivity : AppCompatActivity() {
@@ -274,6 +274,7 @@ class MapActivity : AppCompatActivity() {
                 if (marker != null) {
                     marker.position = midLatLng
                     nowLocation = marker.position
+
                 }
             }
         }
@@ -281,7 +282,10 @@ class MapActivity : AppCompatActivity() {
         b.saveLocation.setOnClickListener {
             if (nowLocation != null) {
 
-                Toast.makeText(this, "${nowLocation?.latitude}", Toast.LENGTH_SHORT).show()
+                val geocoder =Geocoder(this)
+                val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
+
+                Toast.makeText(this, "${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
                 // if user location is null set the previous location fetched
                // location = GeoPoint(nowLocation.latitude, nowLocation.longitude)
 
