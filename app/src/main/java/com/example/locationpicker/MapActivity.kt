@@ -286,12 +286,8 @@ class MapActivity : AppCompatActivity() {
                 val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
 
                 Toast.makeText(this, "${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
-                // if user location is null set the previous location fetched
-               // location = GeoPoint(nowLocation.latitude, nowLocation.longitude)
 
-            } else {
-//                location =
-//                    GeoPoint(userCurrentLocation!!.latitude, userCurrentLocation!!.longitude)
+
             }
         }
     }
