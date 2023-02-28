@@ -24,6 +24,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -32,9 +33,11 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import java.util.*
 
 
-class MapActivity : AppCompatActivity() {
+class MapActivity : AppCompatActivity(), GoogleMap.OnMapClickListener,
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener {
     private val PERMISSION_ID = 1
     private val REQUEST_CHECK_SETTINGS =100
     private var nowLocation: LatLng ?=null
@@ -275,8 +278,34 @@ class MapActivity : AppCompatActivity() {
                     marker.position = midLatLng
                     nowLocation = marker.position
 
+                    //Update the value background thread to UI thread
+                    Handler(Looper.myLooper()!!).postDelayed(Runnable {
+
+                        val geocoder = Geocoder(this)
+                        val addresses: List<Address>? = geocoder.getFromLocation(
+                            nowLocation?.latitude ?: 0.0,
+                            nowLocation?.longitude ?: 0.0,
+                            1
+                        )
+
+                        runOnUiThread {
+                            Toast.makeText(
+                                this,
+                                "${addresses?.get(0)?.getAddressLine(0)}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    },1000)
+
+
                 }
             }
+
+            googleMap.setOnMapClickListener(this)
+            googleMap.setOnMarkerClickListener(this)
+            googleMap.setOnMapLongClickListener(this)
+
         }
         dialog.setCancelable(false)
         b.saveLocation.setOnClickListener {
@@ -287,23 +316,36 @@ class MapActivity : AppCompatActivity() {
 
                 Toast.makeText(this, "${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
 
-
             }
         }
     }
-    private fun setCurrentPositionLocation() {
-        nowLocation?.let {
-            //setNewMapMarker(LatLng(it.latitude, it.longitude))
-//            geocoderPresenter?.getInfoFromLocation(
-//                LatLng(
-//                    it.latitude,
-//                    it.longitude
-//                )
-//            )
-        }
+
+    override fun onMapClick(latLng: LatLng) {
+        val geocoder =Geocoder(this)
+        val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
+
+        Toast.makeText(this, "${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onMarkerClick(p0: Marker): Boolean {
+        val geocoder =Geocoder(this)
+        val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
+
+        Toast.makeText(this, "Marker :: ${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
+        return true
+    }
+
+    override fun onMapLongClick(p0: LatLng) {
+        val geocoder =Geocoder(this)
+        val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
+
+        Toast.makeText(this, "LongClick:: ${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
     }
 
 
 
+}
 
+interface UpdateUiDelegate {
+    fun onUpdateUi()
 }
