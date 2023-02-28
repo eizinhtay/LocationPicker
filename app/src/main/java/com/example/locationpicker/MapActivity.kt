@@ -294,6 +294,8 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMapClickListener,
                                 "${addresses?.get(0)?.getAddressLine(0)}",
                                 Toast.LENGTH_SHORT
                             ).show()
+
+                            b.street.text = addresses?.get(0)?.getAddressLine(0)
                         }
 
                     },1000)
@@ -310,6 +312,7 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMapClickListener,
         dialog.setCancelable(false)
         b.saveLocation.setOnClickListener {
             if (nowLocation != null) {
+                dialog.dismiss()
 
                 val geocoder =Geocoder(this)
                 val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
