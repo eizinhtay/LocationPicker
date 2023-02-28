@@ -59,6 +59,8 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMapClickListener,
             getLastLocation()
         }
 
+        //needToCheckNetworkConnection
+
 
     }
 
@@ -289,11 +291,6 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMapClickListener,
                         )
 
                         runOnUiThread {
-                            Toast.makeText(
-                                this,
-                                "${addresses?.get(0)?.getAddressLine(0)}",
-                                Toast.LENGTH_SHORT
-                            ).show()
 
                             b.street.text = addresses?.get(0)?.getAddressLine(0)
                         }
@@ -327,14 +324,14 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMapClickListener,
         val geocoder =Geocoder(this)
         val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
 
-        Toast.makeText(this, "${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
+      //  Toast.makeText(this, "${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {
         val geocoder =Geocoder(this)
         val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
 
-        Toast.makeText(this, "Marker :: ${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
+       // Toast.makeText(this, "Marker :: ${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
         return true
     }
 
@@ -342,7 +339,7 @@ class MapActivity : AppCompatActivity(), GoogleMap.OnMapClickListener,
         val geocoder =Geocoder(this)
         val addresses: List<Address>? = geocoder.getFromLocation(nowLocation?.latitude ?:0.0, nowLocation?.longitude ?:0.0, 1)
 
-        Toast.makeText(this, "LongClick:: ${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "LongClick:: ${addresses?.get(0)?.getAddressLine(0)}", Toast.LENGTH_SHORT).show()
     }
 
 
